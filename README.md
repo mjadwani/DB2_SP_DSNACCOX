@@ -7,7 +7,12 @@ Codes provided are written in REXX Language.
 
 Codes provided are developed and tested on z/OS 2.3 ,DB2 V10 .
 
-# LIMITATIONS
+# Limitations:
 CHECKLVL Parameter is set to 0 . So Exception Tables will not be used as of now.
 
 SPECIALPARM parameter is set to null .Will not be used. 
+
+# Install Instructions:
+Upload JCL and REXX Code to PDS dataset . 
+Dataset Attributes LRECL=80,RECFM=FB.
+Make sure while uploading format of the file does not change at destination.
