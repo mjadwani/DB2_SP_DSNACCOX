@@ -1,0 +1,788 @@
+/* Rexx                                                         */      00010000
+/* Author: Manoj K Jadwani                                      */      00020084
+/* When  : Friday May 24 2019                                   */      00030084
+/* Purpose: Invokes SYSPROC.DSNACCOX                            */      00040084
+/* ************************************************************ */      00050084
+/* Version Who   What                                           */      00060084
+/* V1      MJ    GA                                             */      00070084
+/*                                                              */      00080084
+/*                                                              */      00090084
+call read_input              /* read from SYSIN                       */00100097
+                             /* make sure 8 parms are read from sysin */00101097
+                             /* and in same order.                    */00102097
+                                                                        00103097
+parse var result ssid qtyp otyp ictyp catsch locsch crit name           00110087
+                                                                        00111097
+pc=0;prms.=' '               /* variables for parmused ddname         */00120097
+                                                                        00121097
+call query_type qtyp         /* Each DB2 SP parm has its own function */00130097
+parm1 = result                                                          00140003
+pc = pc + 1                                                             00150090
+prms.pc ="Query Type: "||parm1                                          00160091
+if length(parm1) > 0 then iparm1 = 0                                    00170023
+else iparm1 = -1                                                        00180023
+                                                                        00190090
+call object_type otyp                                                   00200087
+parm2 = result                                                          00210008
+pc = pc + 1                                                             00220090
+prms.pc ="Object Type: "||parm2                                         00230091
+if length(parm2) > 0 then iparm2 = 0                                    00240023
+else iparm2 = -1                                                        00250023
+                                                                        00260008
+call ic_type ictyp                                                      00270087
+parm3 = result                                                          00280008
+pc = pc + 1                                                             00290090
+prms.pc ="ICType: "||parm3                                              00300091
+if length(parm3) > 0 then iparm3 = 0                                    00310023
+else iparm3 = -1                                                        00320023
+                                                                        00330009
+call catalog_schema catsch    /* Default Value is SYSIBM */             00340097
+parm4 = result                                                          00350009
+pc = pc + 1                                                             00360090
+prms.pc ="Catalog Schema :"||parm4                                      00370091
+if length(parm4) > 0 then iparm4 = 0                                    00380023
+else iparm4 = -1                                                        00390023
+                                                                        00400009
+call local_schema locsch      /* default value is DSNACC */             00410097
+parm5 = result                                                          00420011
+pc = pc + 1                                                             00430090
+prms.pc ="Local Schema :"||parm5                                        00440091
+if length(parm5) > 0 then iparm5 = 0                                    00450023
+else iparm5 = -1                                                        00460023
+                                                                        00470013
+call check_level              /* for now check level is 0 */            00480097
+parm6 = result                                                          00490013
+pc = pc + 1                                                             00500090
+prms.pc ="Check Level: "||parm6                                         00510091
+if length(parm6) > 0 then iparm6 = 0                                    00520023
+else iparm6 = -1                                                        00530023
+                                                                        00540013
+call parm_criteria crit name     /* srch by  ='DB' or 'TS'  */          00550097
+parm7 = result                   /* if 'DB' then provide database name*/00560097
+pc = pc + 1                      /* if 'TS' then provide TSpace  name*/ 00570097
+prms.pc ="Criteria   : "||parm7                                         00580091
+if length(parm7) > 0 then iparm7 = 0                                    00590023
+else iparm7 = -1                                                        00600023
+                                                                        00610014
+call special_parms                /* not used in this version */        00620097
+parm8 = result                                                          00630018
+pc = pc + 1                                                             00640090
+prms.pc ="Special Parm : "||parm8                                       00650091
+if length(parm8) > 0 then iparm8 = 0                                    00660023
+else iparm8 = -1                                                        00670023
+if parm8 == "NULL" then iparm8 =-1                                      00680040
+                                                                        00690018
+call p_CRUpdatedPagesPct                                                00700019
+parm9 = result                                                          00710019
+pc = pc + 1                                                             00720090
+prms.pc ="CRUpdatedPagesPct :"||Parm9                                   00730091
+if length(parm9) > 0 then iparm9 = 0                                    00740023
+else iparm9 = -1                                                        00750023
+                                                                        00760019
+call p_CRUpdatedPagesABS                                                00770019
+parmA = result                                                          00780019
+pc = pc + 1                                                             00790090
+prms.pc ="CRUpdatedPagesABS :"||ParmA                                   00800091
+if length(parmA) > 0 then iparmA = 0                                    00810023
+else iparmA = -1                                                        00820023
+                                                                        00830019
+call p_CRChangesPct                                                     00840020
+parmB = result                                                          00850020
+pc = pc + 1                                                             00860090
+prms.pc ="CRChangesPct :"||ParmB                                        00870091
+if length(parmB) > 0 then iparmB = 0                                    00880023
+else iparmB = -1                                                        00890023
+                                                                        00900020
+call p_CRDaySncLastCopy                                                 00910020
+parmC = result                                                          00920020
+pc = pc + 1                                                             00930090
+prms.pc ="CRDaySncLastCopy :"||ParmC                                    00940091
+if length(parmC) > 0 then iparmC = 0                                    00950023
+else iparmC = -1                                                        00960023
+                                                                        00970020
+call p_ICRUpdatedPagesPct                                               00980020
+parmD = result                                                          00990020
+pc = pc + 1                                                             01000090
+prms.pc ="ICRUpdatedPagesPct :"||ParmD                                  01010091
+if length(parmD) > 0 then iparmD = 0                                    01020023
+else iparmD = -1                                                        01030023
+                                                                        01040020
+call p_ICRUpdatedPagesAbs                                               01050020
+parmE = result                                                          01060020
+pc = pc + 1                                                             01070090
+prms.pc ="ICRUpdatedPagesAbs :"||ParmE                                  01080091
+if length(parmE) > 0 then iparmE = 0                                    01090023
+else iparmE = -1                                                        01100023
+                                                                        01110020
+call p_ICRChangesPct                                                    01120021
+parmF = result                                                          01130021
+pc = pc + 1                                                             01140090
+prms.pc ="ICRChangesPct :"||ParmF                                       01150091
+if length(parmF) > 0 then iparmF = 0                                    01160023
+else iparmF = -1                                                        01170023
+                                                                        01180021
+call p_CRIndexSize                                                      01190021
+parmG = result                                                          01200021
+pc = pc + 1                                                             01210090
+prms.pc ="CRIndexSize   :"||ParmG                                       01220091
+if length(parmG) > 0 then iparmG = 0                                    01230023
+else iparmG = -1                                                        01240023
+                                                                        01250021
+call p_RRTInsertsPct                                                    01260021
+parmH = result                                                          01270021
+pc = pc + 1                                                             01280090
+prms.pc ="RRTInsertsPct :"||ParmH                                       01290091
+if length(parmH) > 0 then iparmH = 0                                    01300023
+else iparmH = -1                                                        01310023
+                                                                        01320021
+call p_RRTInsertsAbs                                                    01330021
+parmI = result                                                          01340021
+pc = pc + 1                                                             01350090
+prms.pc ="RRTInsertsAbs :"||ParmI                                       01360091
+if length(parmI) > 0 then iparmI = 0                                    01370023
+else iparmI = -1                                                        01380023
+                                                                        01390021
+call p_RRTDeletesPct                                                    01400021
+parmJ = result                                                          01410021
+pc = pc + 1                                                             01420090
+prms.pc ="RRTDeletesPct :"||ParmJ                                       01430091
+if length(parmJ) > 0 then iparmJ = 0                                    01440023
+else iparmJ = -1                                                        01450023
+                                                                        01460021
+call p_RRTDeletesAbs                                                    01470021
+parmK = result                                                          01480021
+pc = pc + 1                                                             01490090
+prms.pc ="RRTDeletesAbs :"||ParmK                                       01500091
+if length(parmK) > 0 then iparmK = 0                                    01510023
+else iparmK = -1                                                        01520023
+                                                                        01530021
+call p_RRTUnclustInsPct                                                 01540021
+parmL = result                                                          01550021
+pc = pc + 1                                                             01560090
+prms.pc ="RRTUnclustInsPct :"||ParmL                                    01570091
+if length(parmL) > 0 then iparmL = 0                                    01580023
+else iparmL = -1                                                        01590023
+                                                                        01600021
+call p_RRTDisorgLOBPct                                                  01610021
+parmM = result                                                          01620021
+pc = pc + 1                                                             01630090
+prms.pc ="RRTDisorgLOBPct  :"||ParmM                                    01640091
+if length(parmM) > 0 then iparmM = 0                                    01650023
+else iparmM = -1                                                        01660023
+                                                                        01670021
+call p_RRTDataSpaceRat                                                  01680021
+parmN = result                                                          01690021
+pc = pc + 1                                                             01700090
+prms.pc ="RRTDataSpaceRat  :"||ParmN                                    01710091
+if length(parmN) > 0 then iparmN = 0                                    01720023
+else iparmN = -1                                                        01730023
+                                                                        01740023
+call p_RRTMassDelLimit                                                  01750021
+parmO = result                                                          01760021
+pc = pc + 1                                                             01770090
+prms.pc ="RRTMassDelLimit  :"||ParmO                                    01780091
+if length(parmO) > 0 then iparmO = 0                                    01790023
+else iparmO = -1                                                        01800023
+                                                                        01810023
+call p_RRTIndRefLimit                                                   01820022
+parmp = result                                                          01830022
+pc = pc + 1                                                             01840090
+prms.pc ="RRTIndRefLimit   :"||ParmP                                    01850091
+if length(parmp) > 0 then iparmp = 0                                    01860023
+else iparmp = -1                                                        01870023
+                                                                        01880023
+call p_RRIInsertsPct                                                    01890022
+parmq = result                                                          01900022
+pc = pc + 1                                                             01910090
+prms.pc ="RRIInsertsPct   :"||Parmq                                     01920091
+if length(parmq) > 0 then iparmq = 0                                    01930023
+else iparmq = -1                                                        01940023
+                                                                        01950023
+call p_RRIInsertsAbs                                                    01960022
+parmr = result                                                          01970022
+pc = pc + 1                                                             01980090
+prms.pc ="RRIInsertsAbs   :"||Parmr                                     01990091
+if length(parmr) > 0 then iparmr = 0                                    02000023
+else iparmr = -1                                                        02010023
+                                                                        02020022
+call p_RRIDeletesPct                                                    02030022
+parms = result                                                          02040022
+pc = pc + 1                                                             02050090
+prms.pc ="RRIDeletesPct   :"||Parms                                     02060091
+if length(parms) > 0 then iparms = 0                                    02070023
+else iparms = -1                                                        02080023
+                                                                        02090022
+call p_RRIDELETESABS                                                    02100042
+parmsd = result                                                         02110042
+pc = pc + 1                                                             02120090
+prms.pc ="RRIDELETESABS   :"||Parmsd                                    02130091
+if length(parmsd) > 0 then iparmsd= 0                                   02140042
+else iparmsd = -1                                                       02150042
+                                                                        02160042
+call p_RRIAppendInsertPct                                               02170022
+parmt = result                                                          02180022
+pc = pc + 1                                                             02190090
+prms.pc ="RRIAppendInsertPct :"||Parmt                                  02200091
+if length(parmt) > 0 then iparmt = 0                                    02210023
+else iparmt = -1                                                        02220023
+                                                                        02230022
+call p_RRIPseudoDeletePct                                               02240022
+parmu = result                                                          02250022
+pc = pc + 1                                                             02260090
+prms.pc ="RRIPseudoDeletePct :"||Parmu                                  02270091
+if length(parmu) > 0 then iparmu = 0                                    02280023
+else iparmu = -1                                                        02290023
+                                                                        02300023
+call p_RRIMassDelLimit                                                  02310022
+parmv = result                                                          02320022
+pc = pc + 1                                                             02330090
+prms.pc ="RRIMassDelLimit :"||Parmv                                     02340091
+if length(parmv) > 0 then iparmv = 0                                    02350023
+else iparmv = -1                                                        02360023
+                                                                        02370022
+call p_RRILeafLimit                                                     02380022
+parmw = result                                                          02390022
+pc = pc + 1                                                             02400090
+prms.pc ="RRILeafLimit :"||Parmw                                        02410091
+if length(parmw) > 0 then iparmw = 0                                    02420023
+else iparmw = -1                                                        02430023
+                                                                        02440023
+call p_RRINumLevelsLimit                                                02450022
+parmx = result                                                          02460022
+pc = pc + 1                                                             02470090
+prms.pc ="RRINumLevelsLimit :"||parmx                                   02480091
+if length(parmx) > 0 then iparmx = 0                                    02490023
+else iparmx = -1                                                        02500023
+                                                                        02510022
+call p_SRTInsDelUpdPct                                                  02520022
+parmy = result                                                          02530022
+pc = pc + 1                                                             02540090
+prms.pc ="SRTInsDelUpdPct   :"||parmy                                   02550091
+if length(parmy) > 0 then iparmy = 0                                    02560023
+else iparmy = -1                                                        02570023
+                                                                        02580023
+call p_SRTInsDelUpdAbs                                                  02590023
+parmz = result                                                          02600023
+pc = pc + 1                                                             02610090
+prms.pc ="SRTInsDelUpdAbs   :"||parmz                                   02620091
+if length(parmz) > 0 then iparmz = 0                                    02630023
+else iparmz = -1                                                        02640023
+                                                                        02650023
+call p_SRTMassDelLimit                                                  02660023
+parma1 = result                                                         02670023
+pc = pc + 1                                                             02680090
+prms.pc ="SRTMassDelLimit   :"||parma1                                  02690091
+if length(parma1) > 0 then iparma1= 0                                   02700023
+else iparma1 = -1                                                       02710023
+                                                                        02720023
+call p_SRIInsDelPct                                                     02730023
+parma2 = result                                                         02740023
+pc = pc + 1                                                             02750090
+prms.pc ="SRIInsDelPct      :"||parma2                                  02760091
+if length(parma2) > 0 then iparma2= 0                                   02770023
+else iparma2 = -1                                                       02780023
+                                                                        02790023
+call p_SRIInsDelAbs                                                     02800023
+parma3 = result                                                         02810023
+pc = pc + 1                                                             02820090
+prms.pc ="SRIInsDelAbs   :"||parma3                                     02830091
+if length(parma3) > 0 then iparma3= 0                                   02840023
+else iparma3 = -1                                                       02850023
+call p_SRIMassDelLimit                                                  02860023
+parma4 = result                                                         02870023
+pc = pc + 1                                                             02880090
+prms.pc ="SRIMassDelLimit   :"||parma4                                  02890091
+if length(parma4) > 0 then iparma4= 0                                   02900023
+else iparma4 = -1                                                       02910023
+call p_ExtentLimit                                                      02920023
+parma5 = result                                                         02930023
+pc = pc + 1                                                             02940090
+prms.pc ="ExtentLimit       :"||parma5                                  02950091
+if length(parma5) > 0 then iparma5= 0                                   02960023
+else iparma5 = -1                                                       02970023
+                                                                        02980026
+laststmt = " ";ilaststmt = 0                                            02990026
+retcode = 0   ;iretcode = 0                                             03000036
+errormsg = " ";ierrormsg = 0                                            03010026
+ifcretcode = 0 ; iifcretcode = 0                                        03020026
+ifcrescode = 0 ; iifcrescode =0                                         03030037
+xsbyte = 0 ;ixsbyte = 0                                                 03040026
+                                                                        03050024
+call write_parmused               /*display parms used by Db2 SP */     03060097
+                                                                        03070090
+proc_stmt = "SYSPROC.DSNACCOX",                                         03080044
+    "(:parm1 :iparm1,",                                                 03090044
+    ":parm2 :iparm2,",                                                  03100044
+    ":parm3 :iparm3,",                                                  03110044
+    ":parm4 :iparm4,",                                                  03120044
+    ":parm5 :iparm5,",                                                  03130044
+    ":parm6 :iparm6,",                                                  03140044
+    ":parm7 :iparm7,",                                                  03150044
+    ":parm8 :iparm8,",                                                  03160044
+    ":parm9 :iparm9,",                                                  03170044
+    ":parma :iparma,",                                                  03180044
+    ":parmb :iparmb,",                                                  03190044
+    ":parmc :iparmc,",                                                  03200044
+    ":parmd :iparmd,",                                                  03210044
+    ":parme :iparme,",                                                  03220044
+    ":parmf :iparmf,",                                                  03230044
+    ":parmg :iparmg,",                                                  03240044
+    ":parmh :iparmh,",                                                  03250044
+    ":parmi :iparmi,",                                                  03260044
+    ":parmj :iparmj,",                                                  03270044
+    ":parmk :iparmk,",                                                  03280044
+    ":parml :iparml,",                                                  03290044
+    ":parmm :iparmm,",                                                  03300044
+    ":parmn :iparmn,",                                                  03310044
+    ":parmo :iparmo,",                                                  03320044
+    ":parmp :iparmp,",                                                  03330044
+    ":parmq :iparmq,",                                                  03340044
+    ":parmr :iparmr,",                                                  03350044
+    ":parms :iparms,",                                                  03360044
+    ":parmsd :iparmsd,",                                                03370044
+    ":parmt :iparmt,",                                                  03380044
+    ":parmu :iparmu,",                                                  03390044
+    ":parmv :iparmv,",                                                  03400044
+    ":parmw :iparmw,",                                                  03410044
+    ":parmx :iparmx,",                                                  03420044
+    ":parmy :iparmy,",                                                  03430044
+    ":parmz :iparmz,",                                                  03440044
+    ":parma1 :iparma1,",                                                03450044
+    ":parma2 :iparma2,",                                                03460044
+    ":parma3 :iparma3,",                                                03470044
+    ":parma4 :iparma4,",                                                03480044
+    ":parma5 :iparma5,",                                                03490044
+    ":laststmt :ilaststmt,",                                            03500042
+    ":retcode :iretcode,",                                              03510042
+    ":errormsg :ierrormsg,",                                            03520042
+    ":ifcretcode :iifcretcode,",                                        03530042
+    ":ifcrescode :iifcrescode,",                                        03540042
+    ":xsbyte :ixsbyte)"                                                 03550044
+                                                                        03551097
+call connect_db2 ssid             /* DB2 Work   */                      03560097
+call run_sp proc_stmt             /* DB2 Work   */                      03570097
+call disconnect_db2               /* DB2 Work   */                      03580097
+call quit_prog                    /* Bye Bye    */                      03590097
+/**************************/                                            03600042
+                                                                        03601097
+write_parmused:                                                         03610090
+address tso                                                             03620090
+"execio "pc" diskw parmused(stem prms. finis"                           03630090
+return                                                                  03640090
+                                                                        03650090
+run_sp :                                                                03660042
+parse arg proc_stmt                                                     03670042
+/* say proc_stmt */                                                     03680042
+proc_name = 'SYSPROC.DSNACCOX'                                          03690047
+address dsnrexx                                                         03700042
+                                                                        03710069
+'EXECSQL CALL 'PROC_STMT                                                03720064
+IF (SQLCODE< 0) THEN CALL SQL_ERROR                                     03730064
+address dsnrexx                                                         03740064
+                                                                        03750069
+'EXECSQL ASSOCIATE LOCATORS (:LOC1 , :LOC2)',                           03760061
+     'WITH PROCEDURE SYSPROC.DSNACCOX'                                  03770062
+IF (SQLCODE<> 0) THEN CALL SQL_ERROR                                    03780069
+                                                                        03790069
+address dsnrexx                                                         03800047
+'EXECSQL ALLOCATE C101 CURSOR FOR RESULT SET :LOC1'                     03810059
+IF (SQLCODE<>0) THEN CALL SQL_ERROR                                     03820069
+                                                                        03830071
+curs101 = 'C101'                                                        03840047
+curs102 = 'C102'                                                        03850071
+                                                                        03860073
+address dsnrexx                                                         03870047
+'EXECSQL ALLOCATE C102 CURSOR FOR RESULT SET :LOC2'                     03880047
+IF (SQLCODE<>0) THEN CALL SQL_ERROR                                     03890069
+                                                                        03900073
+address dsnrexx                                                         03910071
+'EXECSQL DESCRIBE CURSOR :curs102 into :SQLDAL2'                        03920072
+IF (SQLCODE<>0) THEN CALL SQL_ERROR                                     03930071
+recomm2. =" " ; rcom=0 ;rset = 0  /* variables recommnd ddname */       03940093
+do until(sqlcode <> 0)                                                  03950073
+address dsnrexx "execsql fetch c102 into descriptor :sqldar2"           03960073
+IF (SQLCODE< 0) THEN CALL SQL_ERROR                                     03970081
+/* say sqldal2.sqld */                                                  03980094
+rcom =rcom + 1                                                          03990093
+rset = rset + 1                                                         04000093
+recomm2.rcom = "Output Row "rset                                        04010093
+rcom =rcom + 1                                                          04020094
+recomm2.rcom = "==========="                                            04030094
+rcom =rcom + 1                                                          04040094
+recomm2.rcom = "           "                                            04050094
+do rx = 1 to sqldal2.sqld                                               04060077
+if sqldar2.rx.sqlind < 0  then sqldar2.rx.sqldata="NULL"                04070078
+/* say sqldal2.rx.sqlname||"="||sqldar2.rx.SQLdata  */                  04080094
+rcom = rcom + 1                                                         04090093
+recomm2.rcom = sqldal2.rx.sqlname||"="||sqldar2.rx.SQLdata              04100093
+end rx                                                                  04110076
+rcom = rcom + 1                                                         04120095
+recomm2.rcom = "  "                                                     04130095
+end                                                                     04140073
+call write_recomm2                                                      04150093
+                                                                        04160095
+address dsnrexx                                                         04170072
+'EXECSQL DESCRIBE CURSOR :curs101 into :SQLDAL1'                        04180072
+IF (SQLCODE<>0) THEN CALL SQL_ERROR                                     04190072
+                                                                        04200095
+do until(sqlcode <> 0)                                                  04210079
+address dsnrexx "execsql fetch c101 into descriptor :sqldar1"           04220079
+IF (SQLCODE < 0) THEN CALL SQL_ERROR                                    04230082
+                                                                        04240095
+say sqldal1.sqld   /* result set 1 */                                   04250095
+do rx = 1 to sqldal1.sqld                                               04260083
+if sqldar1.rx.sqlind < 0  then sqldar1.rx.sqldata="NULL"                04270079
+say sqldal1.rx.sqlname||"="||sqldar1.rx.SQLdata                         04280079
+end rx                                                                  04290079
+end                                                                     04300079
+                                                                        04310069
+address dsnrexx "execsql close C101 "                                   04320069
+address dsnrexx "execsql close C102 "                                   04330071
+return                                                                  04340071
+                                                                        04350071
+disconnect_db2 :                                                        04360071
+     ADDRESS DSNREXX 'EXECSQL COMMIT'                                   04370071
+         IF (SQLCODE<>0) THEN CALL SQL_ERROR                            04380071
+   ADDRESS DSNREXX "DISCONNECT"                                         04390071
+   RC = RXSUBCOM('DELETE','DSNREXX','DSNREXX')                          04400071
+   RETURN                                                               04410071
+                                                                        04420071
+connect_db2 :                                                           04430071
+parse arg dbss                                                          04440087
+ADDRESS TSO                                                             04450071
+"SUBCOM DSNREXX"                                                        04460071
+IF RC<>0 THEN DO                                                        04470071
+         S_RC=RXSUBCOM('ADD','DSNREXX','DSNREXX')                       04480071
+         END                                                            04490071
+         ADDRESS DSNREXX "CONNECT "DBSS                                 04500071
+          IF RC <> 0 THEN DO                                            04510071
+                 SAY 'CANNOT CONNECT TO ' DB2_SUBSYS ' RC=' RC          04520071
+                 EXIT(23)                                               04530071
+                               END                                      04540071
+          else say "connection to db2 "dbss" successful"                04550071
+RETURN RC                                                               04560071
+                                                                        04570071
+p_RRIDELETESABS     :                                                   04580071
+/* return default 0  */                                                 04590071
+/* return -1 to turnoff */                                              04600071
+return 0                                                                04610071
+                                                                        04620071
+p_ExtentLimit       :                                                   04630071
+/* return default 254*/                                                 04640071
+/* return -1 to turnoff */                                              04650071
+return 254                                                              04660071
+                                                                        04670071
+p_SRIMassDelLimit   :                                                   04680071
+/* return default 0*/                                                   04690071
+/* return -1 to turnoff */                                              04700071
+return 0                                                                04710071
+p_SRIInsDelAbs      :                                                   04720071
+/* return default 0*/                                                   04730071
+/* return -1 to turnoff */                                              04740071
+return 0                                                                04750071
+p_SRIInsDelPct      :                                                   04760071
+/* return default 20*/                                                  04770071
+/* return -1 to turnoff */                                              04780071
+return 20                                                               04790071
+                                                                        04800071
+p_SRTMassDelLimit   :                                                   04810071
+/* return default 0*/                                                   04820071
+/* return -1 to turnoff */                                              04830071
+return 0                                                                04840071
+p_SRTInsDelUpdAbs   :                                                   04850071
+/* return default 0*/                                                   04860071
+/* return -1 to turnoff */                                              04870071
+return 0                                                                04880071
+p_SRTInsDelUpdPct   :                                                   04890071
+/* return default 20*/                                                  04900071
+/* return -1 to turnoff */                                              04910071
+return 20                                                               04920071
+p_RRINumLevelsLimit :                                                   04930071
+/* return default 0*/                                                   04940071
+/* return -1 to turnoff */                                              04950071
+return 0                                                                04960071
+                                                                        04970071
+p_RRILeafLimit    :                                                     04980071
+/* return default 10*/                                                  04990071
+/* return -1 to turnoff */                                              05000071
+return 10                                                               05010071
+                                                                        05020071
+p_RRIMassDelLimit :                                                     05030071
+/* return default 0 */                                                  05040071
+/* return -1 to turnoff */                                              05050071
+return 0                                                                05060071
+                                                                        05070071
+p_RRIPseudoDeletePct :                                                  05080071
+/* return default 5 DS and 10 Non-DS */                                 05090071
+/* return -1 to turnoff */                                              05100071
+return 5                                                                05110071
+p_RRIAppendInsertPct :                                                  05120071
+/* return default 20 */                                                 05130071
+/* return -1 to turnoff */                                              05140071
+return 20                                                               05150071
+p_RRIDeletesPct   :                                                     05160071
+/* return default 30 */                                                 05170071
+/* return -1 to turnoff */                                              05180071
+return 30                                                               05190071
+                                                                        05200071
+p_RRIInsertsAbs   :                                                     05210071
+/* return default  0 */                                                 05220071
+/* return -1 to turnoff */                                              05230071
+return 0                                                                05240071
+p_RRIInsertsPct   :                                                     05250071
+/* return default 30 */                                                 05260071
+/* return -1 to turnoff */                                              05270071
+return 30                                                               05280071
+                                                                        05290071
+p_RRTIndRefLimit  :                                                     05300071
+/* return default 10 for non ds or 5 for ds */                          05310071
+/* return -1 to turnoff */                                              05320071
+return 5                                                                05330071
+                                                                        05340071
+p_RRTMassDelLimit :                                                     05350071
+/* return default 0 */                                                  05360071
+/* return -1 to turnoff */                                              05370071
+return 0                                                                05380071
+                                                                        05390071
+p_RRTDataSpaceRat :                                                     05400071
+/* return default 2 */                                                  05410071
+/* return -1 to turnoff */                                              05420071
+return 2                                                                05430071
+p_RRTDisorgLOBPct :                                                     05440071
+/* return default 50*/                                                  05450071
+/* return -1 to turnoff */                                              05460071
+return 50                                                               05470071
+                                                                        05480071
+p_RRTUnclustInsPct:                                                     05490071
+/* return default 10*/                                                  05500071
+/* return -1 to turnoff */                                              05510071
+return 10                                                               05520071
+                                                                        05530071
+p_RRTDeletesAbs :                                                       05540071
+/* return default 0 */                                                  05550071
+/* return -1 to turnoff */                                              05560071
+return 0                                                                05570071
+                                                                        05580071
+p_RRTDeletesPct :                                                       05590071
+/* return default 25*/                                                  05600071
+/* return -1 to turnoff */                                              05610071
+return 25                                                               05620071
+                                                                        05630071
+p_RRTInsertsAbs :                                                       05640071
+/* return default 0 */                                                  05650071
+/* return -1 to turnoff */                                              05660071
+return 0                                                                05670071
+                                                                        05680071
+p_RRTInsertsPct :                                                       05690071
+/* return default 25*/                                                  05700071
+/* return -1 to turnoff */                                              05710071
+return 25                                                               05720071
+                                                                        05730071
+p_CRIndexSize   :                                                       05740071
+/* return default 50*/                                                  05750071
+/* return -1 to turnoff */                                              05760071
+return 50                                                               05770071
+                                                                        05780071
+p_ICRChangesPct :                                                       05790071
+/* return default 1 */                                                  05800071
+/* return -1 to turnoff */                                              05810071
+return 1                                                                05820071
+                                                                        05830071
+p_ICRUpdatedPagesAbs :                                                  05840071
+/* return default 0 */                                                  05850071
+/* return -1 to turnoff */                                              05860071
+return 0                                                                05870071
+                                                                        05880071
+p_ICRUpdatedPagesPct :                                                  05890071
+/* return default 1 */                                                  05900071
+/* return -1 to turnoff */                                              05910071
+return 1                                                                05920071
+                                                                        05930071
+p_CRDaySncLastCopy :                                                    05940071
+/* return default 7 */                                                  05950071
+/* return -1 to turnoff */                                              05960071
+return 7                                                                05970071
+                                                                        05980071
+p_CRChangesPct :                                                        05990071
+/* return default 10 */                                                 06000071
+/* return -1 to turnoff */                                              06010071
+return 10                                                               06020071
+                                                                        06030071
+p_CRUpdatedPagesABS :                                                   06040071
+/* return default 0 */                                                  06050071
+/* return -1 to turnoff */                                              06060071
+return 0                                                                06070071
+p_CRUpdatedPagesPct :                                                   06080071
+/* return default 20 */                                                 06090071
+/* return -1 to turnoff */                                              06100071
+return 20                                                               06110071
+                                                                        06120071
+special_parms :                                                         06130071
+/* this option is turned off -1 */                                      06140071
+return NULL                                                             06150071
+                                                                        06160071
+                                                                        06170071
+parm_criteria :                                                         06180071
+parse arg crit name                                                     06190087
+crit_obj= " "                                                           06200087
+if crit =='DB' then                                                     06210087
+   do                                                                   06220087
+   crit_obj = "'DBNAME='"name"''"                                       06230087
+   end                                                                  06240087
+if crit == 'TS' then                                                    06250089
+   do                                                                   06260087
+   crit_obj = "'NAME='"name"''"                                         06270087
+   end                                                                  06280087
+return crit_obj                                                         06290071
+                                                                        06300071
+check_level :                                                           06310071
+/* As of now I am using default value of 5 for chklevel */              06320071
+return 0                                                                06330071
+                                                                        06340071
+local_schema :                                                          06350071
+parse arg locschema                                                     06360087
+if length(locschema)=0 then locschema="DSNACC"                          06370012
+return locschema                                                        06380011
+                                                                        06390011
+catalog_schema :                                                        06400009
+parse arg catschema                                                     06410087
+if length(catschema)==0 then catschema="SYSIBM"                         06420087
+return catschema                                                        06430009
+                                                                        06440009
+ic_type :                                                               06450008
+parse arg inps3                                                         06460087
+ictype. = " "                                                           06470087
+count_ictype = 3          /* num of qtype ops that can be called */     06480008
+ictype.1 = "F"                                                          06490087
+ictype.2 = "I"                                                          06500087
+ictype.3 = "B"                                                          06510087
+flag=0                                                                  06520087
+do doictype = 1 to count_ictype                                         06530008
+   if (inps3 == ictype.doictype) then                                   06540087
+       do                                                               06550087
+       flag = 1                                                         06560087
+       leave                                                            06570087
+       end                                                              06580087
+end doictype                                                            06590008
+if flag==0 then                                                         06600087
+    do                                                                  06610087
+     say "Invalid IC Type Option"                                       06620087
+     call quit_prog                                                     06630087
+    end                                                                 06640087
+                                                                        06650087
+return inps3                                                            06660087
+                                                                        06670008
+object_type :                                                           06680008
+parse arg inps2                                                         06690087
+otype. = " "                                                            06700087
+count_otype = 3          /* num of qtype ops that can be called */      06710008
+otype.1 = "ALL"                                                         06720087
+otype.2 = "TS"                                                          06730087
+otype.3 = "IX"                                                          06740087
+flag = 0                                                                06750087
+do dootype = 1 to count_otype                                           06760008
+     if (inps2 == otype.dootype) then                                   06770087
+         do                                                             06780087
+         flag = 1                                                       06790087
+         leave                                                          06800087
+         end                                                            06810087
+                                                                        06820087
+end dootype                                                             06830008
+if flag == 0 then                                                       06840087
+   do                                                                   06850087
+   say "Invalid object type Option"                                     06860087
+   call quit_prog                                                       06870087
+   end                                                                  06880087
+return inps2                                                            06890087
+                                                                        06900008
+query_type :                                                            06910008
+parse arg inps                                                          06920087
+qtype. = "  " ; n_qtype. = " "                                          06930001
+count_qtype = 6          /* num of qtype ops that can be called */      06940001
+qtype.1 = "ALL" ; n_qtype.1 = 1                                         06950001
+qtype.2 = "COPY" ; n_qtype.2 = 2                                        06960001
+qtype.3 = "RUNSTATS" ; n_qtype.3 = 3                                    06970001
+qtype.4 = "REORG" ; n_qtype.4 = 4                                       06980001
+qtype.5 = "EXTENTS" ; n_qtype.5 = 5                                     06990001
+qtype.6 = "RESTRICT" ; n_qtype.6 = 6                                    07000001
+/* say " Enter Query Type , Select Option " */                          07010087
+flag = 0                                                                07020087
+do doqtype = 1 to count_qtype                                           07030001
+ /*say n_qtype.doqtype    qtype.doqtype */                              07040087
+  if (inps == qtype.doqtype) then                                       07050087
+                 do                                                     07060087
+                 flag = 1                                               07070087
+                 leave                                                  07080087
+                 end                                                    07090087
+end doqtype                                                             07100001
+if flag== 0 then                                                        07110087
+           do                                                           07120087
+           say "Invalid Qtype Option "                                  07130087
+           call quit_prog                                               07140087
+           end                                                          07150087
+ return inps                                                            07160087
+                                                                        07170002
+ quit_prog:                         /*Procedure to exit program */      07180002
+ exit                                                                   07190001
+                                                                        07200030
+SQL_ERROR : /* SQLCA */                                                 07210030
+  SAY SQLCODE                                                           07220030
+  SAY SQLSTATE                                                          07230030
+  SAY SQLERRMC                                                          07240030
+  SAY SQLERRP                                                           07250030
+     SAY 'SQLWARN  = 'SQLWARN.0',' || SQLWARN.1',' || SQLWARN.2',' ||,  07260030
+                      SQLWARN.3',' || SQLWARN.4',' || SQLWARN.5',' ||,  07270030
+                      SQLWARN.6',' || SQLWARN.7',' || SQLWARN.8',' ||,  07280030
+                      SQLWARN.9',' || SQLWARN.10                        07290030
+     SAY 'SQLERRD  = 'SQLERRD.1',' || SQLERRD.2',' || SQLERRD.3',' ||,  07300030
+                      SQLERRD.4',' || SQLERRD.5',' || SQLERRD.6         07310030
+     EXIT (SQLCODE)                                                     07320030
+                                                                        07330087
+  read_input :                                                          07340087
+  address tso                                                           07350087
+  "execio * diskr sysin(stem readinp. "                                 07360087
+  do rin = 1 to readinp.0                                               07370087
+   readinp.rin = translate(readinp.rin," ","=")                         07380087
+   IF POS("DB2SSID",readinp.rin)<>0 THEN                                07390087
+      DO                                                                07400087
+        PARSE VAR readinp.rin . SSID .                                  07410087
+      END                                                               07420087
+   IF POS("QUERYTYPE",readinp.rin)<>0 THEN                              07430087
+      DO                                                                07440087
+        PARSE VAR readinp.rin . qtyp .                                  07450087
+      END                                                               07460087
+   IF POS("OBJTYPE",readinp.rin)<>0 THEN                                07470087
+      DO                                                                07480087
+        PARSE VAR readinp.rin . otyp .                                  07490087
+      END                                                               07500087
+   IF POS("ICTYPE",readinp.rin)<>0 THEN                                 07510087
+      DO                                                                07520087
+        PARSE VAR readinp.rin . ictyp .                                 07530087
+      END                                                               07540087
+   IF POS("CATSCHEMA",readinp.rin)<>0 THEN                              07550087
+      DO                                                                07560087
+        PARSE VAR readinp.rin . catsch .                                07570087
+      END                                                               07580087
+   IF POS("LOCALSCHEMA",readinp.rin)<>0 THEN                            07590087
+      DO                                                                07600087
+        PARSE VAR readinp.rin . locsch .                                07610087
+      END                                                               07620087
+   IF POS("CRITERIA",readinp.rin)<>0 THEN                               07630087
+      DO                                                                07640087
+        PARSE VAR readinp.rin . crit .                                  07650087
+      END                                                               07660087
+   IF POS("NAME",readinp.rin)<>0 THEN                                   07670087
+      DO                                                                07680087
+        PARSE VAR readinp.rin . name .                                  07690087
+      END                                                               07700087
+  end                                                                   07710087
+  result = SSID||" "||qtyp||" "||otyp||" "||ictyp||" "||catsch||,       07720087
+          " "||locsch||" "||crit||" "||name                             07730087
+  return result                                                         07740087
+                                                                        07750096
+                                                                        07760096
+  write_recomm2 :                                                       07770093
+  address tso                                                           07780093
+  "execio "rcom" diskw RECOMMND(stem recomm2. finis"                    07790093
+  return                                                                07800093
+
