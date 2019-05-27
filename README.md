@@ -1,18 +1,16 @@
-# DSNACCOX
+## DSNACCOX
 The DB2® real-time statistics stored procedure (DSNACCOX) is a sample stored procedure that makes recommendations to help you maintain your DB2 databases.
-For detailed information on this stored procedure visit url 
-https://www.ibm.com/support/knowledgecenter/SSEPEK_10.0.0/sqlref/src/tpc/db2z_sp_dsnaccox.html
+Read more about [DSNACCOX](https://www.ibm.com/support/knowledgecenter/SSEPEK_10.0.0/sqlref/src/tpc/db2z_sp_dsnaccox.html)
 
-Codes provided are written in REXX Language.
+- Codes provided are written in REXX Language.
 
-Codes provided are developed and tested on z/OS 2.3 ,DB2 V10 .
+- Codes provided are developed and tested on z/OS 2.3 ,DB2 V10 .
 
-# Limitations:
-CHECKLVL Parameter is set to 0 . So Exception Tables will not be used as of now.
+## Limitations:
+- CHECKLVL Parameter is set to 0 . So Exception Tables will not be used as of now.
+- SPECIALPARM parameter is set to null .Will not be used. 
 
-SPECIALPARM parameter is set to null .Will not be used. 
-
-# Install Instructions:
-Upload JCL and REXX Code to PDS dataset . 
-Dataset Attributes LRECL=80,RECFM=FB.
-Make sure while uploading format of the file does not change at destination.
+## Install Instructions:
+- Upload JCL and REXX Code to PDS dataset . 
+- Dataset Attributes LRECL=80,RECFM=FB.
+- Make sure while uploading format of the file does not change at destination.
